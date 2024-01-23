@@ -15,6 +15,9 @@
 */
 class RaceCrusherAudioProcessor  : public juce::AudioProcessor
 {
+    juce::AudioSampleBuffer currentOutputBuffer;
+    
+    
 public:
     //==============================================================================
     RaceCrusherAudioProcessor();

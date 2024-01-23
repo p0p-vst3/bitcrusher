@@ -95,6 +95,8 @@ void RaceCrusherAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    
+    
 }
 
 void RaceCrusherAudioProcessor::releaseResources()
@@ -135,27 +137,52 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    
+    int numSamples = buffer.getNumSamples();
+    
+    juce::RangedAudioParameter* bits = apvts.getParameter("BIT_DEPTH");
+    int bitVal = bits->getValue();
+    
+    currentOutputBuffer.setSize(2, numSamples, false, true, true);
+    
+    
+    
+//  copy OG buffer into new variable
+    currentOutputBuffer.copyFrom(0, 0, buffer.getReadPointer(0), numSamples);
+    currentOutputBuffer.copyFrom(1, 0, buffer.getReadPointer(1), numSamples);
+    
+    for (int channel = 0; channel < currentOutputBuffer.getNumChannels(); channel++) 
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        //points to channel
+        float* data = currentOutputBuffer.getWritePointer(channel);
+        
+        for (int i = 0; i < numSamples; i++)
+        {
+            //takes 2 to the power of user provided bitdepth. This value is the total number of possiple amplitudes
+            float totalQlevels = powf(2, bitVal);
+            
+            float val = data[i];
+            
+            //stores the following into remainder: the amount val is over nearest quantization step
+            float remainder = fmodf(val, 1/totalQlevels);
+            
+            //performs quantization
+            data[i] = val - remainder;
+            
+            
+        }
+        //copy currentOutputBuffer into OG buffer
+        buffer.copyFrom(0, 0, currentOutputBuffer, 0, 0, numSamples);
+        buffer.copyFrom(1, 0, currentOutputBuffer, 1, 0, numSamples);
 
-        // ..do something to the data...
     }
+    
+    
+    
+    
+    
 }
 
 //==============================================================================
@@ -188,14 +215,19 @@ juce::AudioProcessorValueTreeState::ParameterLayout RaceCrusherAudioProcessor::c
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("NOISE_LEVEL",1),
-                                                         "Noise Level",
-                                                          juce::NormalisableRange<float>(0.f ,1.f ,0.1f),
-                                                          0.f));
+                                                           "Noise Level",
+                                                           juce::NormalisableRange<float>(0.f ,1.f ,0.1f),
+                                                           0.f));
     layout.add(std::make_unique<juce::AudioParameterInt>(juce::ParameterID("BIT_DEPTH",1),
-                                                           "Bit Depth",
-                                                           0,   // min val
-                                                           24,  // max val
-                                                           0));  // default val
+                                                         "Bit Depth",
+                                                         0,   // min val
+                                                         16,  // max val
+                                                         16));  // default val
+    layout.add(std::make_unique<juce::AudioParameterInt>(juce::ParameterID("RATE_DIVIDE", 1),
+                                                         "Rate Divide",
+                                                         1,
+                                                         500,
+                                                         1));
     
     return layout;
 }
