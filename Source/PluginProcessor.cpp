@@ -166,7 +166,8 @@ bool RaceCrusherAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* RaceCrusherAudioProcessor::createEditor()
 {
-    return new RaceCrusherAudioProcessorEditor (*this);
+    //return new RaceCrusherAudioProcessorEditor (*this);
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -183,6 +184,21 @@ void RaceCrusherAudioProcessor::setStateInformation (const void* data, int sizeI
     // whose contents will have been created by the getStateInformation() call.
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout RaceCrusherAudioProcessor::createAudioParameters()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("NOISE_LEVEL",1),
+                                                         "Noise Level",
+                                                          juce::NormalisableRange<float>(0.f ,1.f ,0.1f),
+                                                          0.f));
+    layout.add(std::make_unique<juce::AudioParameterInt>(juce::ParameterID("BIT_DEPTH",1),
+                                                           "Bit Depth",
+                                                           0,   // min val
+                                                           24,  // max val
+                                                           0));  // default val
+    
+    return layout;
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
