@@ -95,7 +95,7 @@ void RaceCrusherAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    
+    downSamplingOn = false;
     
 }
 
@@ -142,10 +142,17 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     
     int numSamples = buffer.getNumSamples();
     
-    juce::RangedAudioParameter* bits = apvts.getParameter("BIT_DEPTH");
-    int bitVal = bits->getValue();
+    std::atomic<float>* bits = apvts.getRawParameterValue("BIT_DEPTH");
+    int bitVal = bits->load();
+    
+    std::atomic<float>* downSamp = apvts.getRawParameterValue("RATE_DIVIDE");
+    int rateDivVal = downSamp->load();
     
     currentOutputBuffer.setSize(2, numSamples, false, true, true);
+    
+
+    if (rateDivVal > 1) {downSamplingOn = true;}
+    else {downSamplingOn = false;}
     
     
     
@@ -157,6 +164,8 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         //points to channel
         float* data = currentOutputBuffer.getWritePointer(channel);
+        
+        
         
         for (int i = 0; i < numSamples; i++)
         {
@@ -171,7 +180,10 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             //performs quantization
             data[i] = val - remainder;
             
-            
+            if (downSamplingOn)
+            {
+                if( i%rateDivVal != 0 ) data[i] = data[i - i%rateDivVal];
+            }
         }
         //copy currentOutputBuffer into OG buffer
         buffer.copyFrom(0, 0, currentOutputBuffer, 0, 0, numSamples);
