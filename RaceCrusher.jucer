@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="qYS7OP" name="RaceCrusher" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="0" jucerFormatVersion="1">
   <MAINGROUP id="B2PYI8" name="RaceCrusher">
     <GROUP id="{E81019A2-EF17-D471-1F03-3F6D16C8F949}" name="Source">
       <FILE id="vzqTse" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -10,7 +10,7 @@
             file="Source/PluginProcessor.h"/>
       <FILE id="lg1mdS" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
-      <FILE id="O8xsFK" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="O8xsFK" name="PluginEditor.h" compile="0" resource="1" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
