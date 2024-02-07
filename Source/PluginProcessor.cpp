@@ -143,10 +143,10 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     
     int numSamples = buffer.getNumSamples();
     
-    int bitDepthValue = static_cast<int>(apvts.getRawParameterValue("BIT_DEPTH")->load()); 
-    int rateDivideValue = static_cast<int>(apvts.getRawParameterValue("RATE_DIVIDE")->load());
+    int bitDepthValue = static_cast<int>(apvts.getRawParameterValue("BIT_DEPTH")->load());
+    int rateDivideValue = static_cast<int>(std::round(apvts.getRawParameterValue("RATE_DIVIDE")->load()));
     float dryWetValue = apvts.getRawParameterValue("DRY_WET")->load();
-    float stepSize = 1.0f / std::pow(2, bitDepthValue);
+    float stepSize = 2.0f / (std::pow(2.0f, bitDepthValue) - 1);
     bool downSamplingOn = rateDivideValue > 1;
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel) 
@@ -202,20 +202,19 @@ juce::AudioProcessorValueTreeState::ParameterLayout RaceCrusherAudioProcessor::c
                                                            juce::NormalisableRange<float>(0.f ,1.f ,0.1f),
                                                            0.f));
     layout.add(std::make_unique<juce::AudioParameterInt>(juce::ParameterID("BIT_DEPTH",1),
-                                                         "Bit Depth",
-                                                         0,   // min val
-                                                         16,  // max val
-                                                         16));  // default val
-    layout.add(std::make_unique<juce::AudioParameterInt>(juce::ParameterID("RATE_DIVIDE", 1),
-                                                         "Rate Divide",
-                                                         1,
-                                                         500,
-                                                         1));
+                                                           "Bit Depth",
+                                                            2,
+                                                            24,
+                                                            24));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("RATE_DIVIDE",1),
+                                                           "Rate Divide",
+                                                           juce::NormalisableRange<float>(1.0f, 512.0f, 0.1f, 0.3f),
+                                                           1.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("DRY_WET",1),
-                                                          "Dry/Wet",
-                                                          0.0f,
-                                                          1.0f,
-                                                          0.5f));
+                                                           "Dry/Wet",
+                                                           0.0f,
+                                                           1.0f,
+                                                           0.5f));
     return layout;
 }
 //==============================================================================
