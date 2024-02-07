@@ -137,64 +137,35 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    //clear unused output channels 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
     int numSamples = buffer.getNumSamples();
     
-    std::atomic<float>* bits = apvts.getRawParameterValue("BIT_DEPTH");
-    int bitVal = bits->load();
+    int bitDepthValue = static_cast<int>(apvts.getRawParameterValue("BIT_DEPTH")->load()); 
+    int rateDivideValue = static_cast<int>(apvts.getRawParameterValue("RATE_DIVIDE")->load());
+    float dryWetValue = apvts.getRawParameterValue("DRY_WET")->load();
+    float stepSize = 1.0f / std::pow(2, bitDepthValue);
+    bool downSamplingOn = rateDivideValue > 1;
     
-    std::atomic<float>* downSamp = apvts.getRawParameterValue("RATE_DIVIDE");
-    int rateDivVal = downSamp->load();
-    
-    currentOutputBuffer.setSize(2, numSamples, false, true, true);
-    
-
-    if (rateDivVal > 1) {downSamplingOn = true;}
-    else {downSamplingOn = false;}
-    
-    
-    
-//  copy OG buffer into new variable
-    currentOutputBuffer.copyFrom(0, 0, buffer.getReadPointer(0), numSamples);
-    currentOutputBuffer.copyFrom(1, 0, buffer.getReadPointer(1), numSamples);
-    
-    for (int channel = 0; channel < currentOutputBuffer.getNumChannels(); channel++) 
+    for (int channel = 0; channel < totalNumInputChannels; ++channel) 
     {
-        //points to channel
-        float* data = currentOutputBuffer.getWritePointer(channel);
-        
-        
+        auto* channelData = buffer.getWritePointer(channel);
         
         for (int i = 0; i < numSamples; i++)
         {
-            //takes 2 to the power of user provided bitdepth. This value is the total number of possiple amplitudes
-            float totalQlevels = powf(2, bitVal);
+            float ogSample = channelData[i];
+            float quantizedSample = quantizeSample(ogSample, stepSize);
             
-            float val = data[i];
-            
-            //stores the following into remainder: the amount val is over nearest quantization step
-            float remainder = fmodf(val, 1/totalQlevels);
-            
-            //performs quantization
-            data[i] = val - remainder;
-            
-            if (downSamplingOn)
+            if (downSamplingOn && i % rateDivideValue != 0)
             {
-                if( i%rateDivVal != 0 ) data[i] = data[i - i%rateDivVal];
+                quantizedSample = channelData[i - i % rateDivideValue];
             }
-        }
-        //copy currentOutputBuffer into OG buffer
-        buffer.copyFrom(0, 0, currentOutputBuffer, 0, 0, numSamples);
-        buffer.copyFrom(1, 0, currentOutputBuffer, 1, 0, numSamples);
 
+            channelData[i] = applyDryWetMix(ogSample, quantizedSample, dryWetValue);
+        }
     }
-    
-    
-    
-    
-    
 }
 
 //==============================================================================
@@ -240,7 +211,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout RaceCrusherAudioProcessor::c
                                                          1,
                                                          500,
                                                          1));
-    
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("DRY_WET",1),
+                                                          "Dry/Wet",
+                                                          0.0f,
+                                                          1.0f,
+                                                          0.5f));
     return layout;
 }
 //==============================================================================

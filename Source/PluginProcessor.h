@@ -59,6 +59,14 @@ public:
     juce::AudioProcessorValueTreeState::ParameterLayout createAudioParameters();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createAudioParameters()};
 
+    float quantizeSample(float sample, float stepSize) const {
+        return sample - std::fmod(sample, stepSize);
+    }
+
+    float applyDryWetMix(float drySample, float wetSample, float dryWetValue) {
+        return drySample * (1.0f - dryWetValue) + wetSample * dryWetValue;
+    }
+
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RaceCrusherAudioProcessor)
