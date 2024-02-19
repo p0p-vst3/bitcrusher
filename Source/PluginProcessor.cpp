@@ -197,10 +197,6 @@ void RaceCrusherAudioProcessor::setStateInformation (const void* data, int sizeI
 juce::AudioProcessorValueTreeState::ParameterLayout RaceCrusherAudioProcessor::createAudioParameters()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("NOISE_LEVEL",1),
-                                                           "Noise Level",
-                                                           juce::NormalisableRange<float>(0.f ,1.f ,0.01f),
-                                                           0.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("BIT_DEPTH",1),
                                                            "Bit Depth",
                                                             juce::NormalisableRange<float>(1.0f, 16.0f, 0.01f, 0.4f),
