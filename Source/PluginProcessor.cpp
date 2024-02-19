@@ -146,7 +146,7 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     int bitDepthValue = static_cast<int>(apvts.getRawParameterValue("BIT_DEPTH")->load());
     int rateDivideValue = static_cast<int>(std::round(apvts.getRawParameterValue("RATE_DIVIDE")->load()));
     float dryWetValue = apvts.getRawParameterValue("DRY_WET")->load();
-    float stepSize = 2.0f / (std::pow(2.0f, bitDepthValue) - 1);
+    float stepSize = 2.0f / (std::pow(2.0f, bitDepthValue));
     bool downSamplingOn = rateDivideValue > 1;
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel) 
@@ -199,16 +199,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout RaceCrusherAudioProcessor::c
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("NOISE_LEVEL",1),
                                                            "Noise Level",
-                                                           juce::NormalisableRange<float>(0.f ,1.f ,0.1f),
+                                                           juce::NormalisableRange<float>(0.f ,1.f ,0.01f),
                                                            0.f));
-    layout.add(std::make_unique<juce::AudioParameterInt>(juce::ParameterID("BIT_DEPTH",1),
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("BIT_DEPTH",1),
                                                            "Bit Depth",
-                                                            2,
-                                                            24,
-                                                            24));
+                                                            juce::NormalisableRange<float>(1.0f, 16.0f, 0.01f, 0.4f),
+                                                            16.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("RATE_DIVIDE",1),
                                                            "Rate Divide",
-                                                           juce::NormalisableRange<float>(1.0f, 512.0f, 0.1f, 0.3f),
+                                                           juce::NormalisableRange<float>(1.0f, 512.0f, 0.01f, 0.3f),
                                                            1.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("DRY_WET",1),
                                                            "Dry/Wet",
