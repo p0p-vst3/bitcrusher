@@ -176,8 +176,8 @@ bool RaceCrusherAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* RaceCrusherAudioProcessor::createEditor()
 {
-    //return new RaceCrusherAudioProcessorEditor (*this);
-    return new juce::GenericAudioProcessorEditor(*this);
+    return new RaceCrusherAudioProcessorEditor (*this);
+    //return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================

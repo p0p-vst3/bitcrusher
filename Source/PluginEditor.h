@@ -14,6 +14,20 @@
 //==============================================================================
 /**
 */
+class DialStyle : public juce::LookAndFeel_V4
+{
+public:
+    DialStyle();
+    
+    void drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
+                           const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider& slider) override;
+    void drawLabel(juce::Graphics& g, juce::Label& label) override;
+private:
+    float sliderWidth;
+};
+
+
+
 class RaceCrusherAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
@@ -23,8 +37,14 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    
+    
 
 private:
+    
+    void setCommonSliderProps(juce::Slider& slider);
+    
+    
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     RaceCrusherAudioProcessor& audioProcessor;
@@ -35,7 +55,18 @@ private:
     juce::AudioProcessorValueTreeState::SliderAttachment bitDepthAttachment;
     juce::AudioProcessorValueTreeState::SliderAttachment rateDivideAttachment;
     juce::AudioProcessorValueTreeState::SliderAttachment dryWetAttachment;
+    
+    juce::DropShadow shadowProperties;
+    juce::DropShadowEffect dialShadow;
+   
+
+    
+private:
+    DialStyle customDialLookAndFeel;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RaceCrusherAudioProcessorEditor)
 };
+
+
+
