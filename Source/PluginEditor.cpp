@@ -181,11 +181,11 @@ dryWetAttachment(audioProcessor.apvts, "DRY_WET", dryWetSlider)
     setSize (600, 400);
 //    bitDepthSlider.setSliderStyle(juce::Slider::LinearHorizontal);
 //    bitDepthSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 25);
-    bitDepthSlider.setRange(0.0, 1.0, 0.01);
+    bitDepthSlider.setRange(1.0, 16.0, 0.01);
     
 //    rateDivideSlider.setSliderStyle(juce::Slider::LinearHorizontal);
 //    rateDivideSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 25);
-    rateDivideSlider.setRange(0.0, 1.0, 0.01);
+    rateDivideSlider.setRange(1.0, 512.0, 0.01);
     
 //    dryWetSlider.setSliderStyle(juce::Slider::LinearHorizontal);
 //    dryWetSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 25);
