@@ -233,11 +233,22 @@ void RaceCrusherAudioProcessorEditor::setCommonSliderProps(juce::Slider& slider)
 void RaceCrusherAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
+    auto bounds = getBounds();
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-    auto titleBounds = getBounds().removeFromTop(getHeight()/5);
+    auto titleBounds = bounds.removeFromTop(getHeight()/5);
     g.setColour(juce::Colours::ivory);
     g.setFont(38.f);
     g.drawText("Race Crusher", titleBounds, juce::Justification::centred);
+    auto textBounds = bounds.removeFromTop(JUCE_LIVE_CONSTANT(30));
+//    g.fillRect(textBounds);
+    auto bitDepthTextBounds = textBounds.removeFromLeft(textBounds.getWidth()/3);
+    auto rateDivideTextBounds = textBounds.removeFromLeft(textBounds.getWidth()/2);
+    auto dryWetTextBounds = textBounds;
+    
+    g.setFont(18.f);
+    g.drawText("Bit Depth", bitDepthTextBounds, juce::Justification::centred);
+    g.drawText("Rate Divide", rateDivideTextBounds, juce::Justification::centred);
+    g.drawText("Dry/Wet", dryWetTextBounds, juce::Justification::centred);
 }
 
 void RaceCrusherAudioProcessorEditor::resized()
