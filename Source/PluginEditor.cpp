@@ -221,6 +221,7 @@ void RaceCrusherAudioProcessorEditor::setCommonSliderProps(juce::Slider& slider)
     slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 96, 36);
     slider.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colours::transparentBlack);
     slider.setLookAndFeel(&customDialLookAndFeel);
+    
     shadowProperties.radius = 8;
     shadowProperties.offset = juce::Point<int> (0,0);
     shadowProperties.colour = juce::Colours::black;
