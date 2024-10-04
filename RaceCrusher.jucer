@@ -4,6 +4,7 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="B2PYI8" name="RaceCrusher">
     <GROUP id="{E81019A2-EF17-D471-1F03-3F6D16C8F949}" name="Source">
+      <FILE id="JfR6BR" name="PresetPanel.h" compile="0" resource="0" file="Source/PresetPanel.h"/>
       <FILE id="vzqTse" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="Flsd4X" name="PluginProcessor.h" compile="0" resource="0"

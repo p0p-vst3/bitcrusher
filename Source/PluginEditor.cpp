@@ -8,6 +8,8 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "PresetPanel.h"
+
 DialStyle::DialStyle() {}
 
 void DialStyle::drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
@@ -195,6 +197,7 @@ dryWetAttachment(audioProcessor.apvts, "DRY_WET", dryWetSlider)
     setCommonSliderProps(rateDivideSlider);
     setCommonSliderProps(dryWetSlider);
     
+    addAndMakeVisible(presetPanel);
 //    addAndMakeVisible(bitDepthSlider);
 //    addAndMakeVisible(rateDivideSlider);
 //    addAndMakeVisible(dryWetSlider);
@@ -261,6 +264,8 @@ void RaceCrusherAudioProcessorEditor::resized()
     bitDepthSlider.setBounds(bitDepthBounds);
     rateDivideSlider.setBounds(rateDivideBounds);
     dryWetSlider.setBounds(dryWetBounds);
+    
+    presetPanel.setBounds(getWidth() / 2, 0, getWidth() / 2, 30);
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 }

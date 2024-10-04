@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "PresetPanel.h"
 
 //==============================================================================
 /**
@@ -51,6 +52,8 @@ private:
     juce::Slider bitDepthSlider;
     juce::Slider rateDivideSlider;
     juce::Slider dryWetSlider;
+    
+    Gui::PresetPanel presetPanel;
     
     juce::AudioProcessorValueTreeState::SliderAttachment bitDepthAttachment;
     juce::AudioProcessorValueTreeState::SliderAttachment rateDivideAttachment;
