@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "PresetManager.h"
 
 //==============================================================================
 /**
@@ -67,7 +68,9 @@ public:
         return drySample * (1.0f - dryWetValue) + wetSample * dryWetValue;
     }
 
+    Service::PresetManager& getPresetManager() { return presetManager; }
 private:
+    Service::PresetManager presetManager;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RaceCrusherAudioProcessor)
 };

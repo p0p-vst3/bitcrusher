@@ -26,8 +26,8 @@ namespace Service
         void savePreset(const juce::String& presetName);
         void deletePreset(const juce::String& presetName);
         void loadPreset(const juce::String& presetName);
-        int loadNextPreset();
-        int loadPreviousPreset();
+        void loadNextPreset();
+        void loadPreviousPreset();
         juce::StringArray getAllPresets() const;
         juce::String getCurrentPreset() const;
         

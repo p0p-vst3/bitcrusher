@@ -19,7 +19,7 @@ RaceCrusherAudioProcessor::RaceCrusherAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), presetManager(apvts)
 #endif
 {
 }
