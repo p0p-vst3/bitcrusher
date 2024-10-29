@@ -32,6 +32,8 @@ namespace Service
         juce::String getCurrentPreset() const;
         
     private:
+        void valueTreeRedirected(juce::ValueTree& treeWhichHasBeenChanged) override;
+        
         juce::AudioProcessorValueTreeState& apvtsRef;
         juce::Value currentPreset;
         

@@ -19,9 +19,12 @@ RaceCrusherAudioProcessor::RaceCrusherAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), presetManager(apvts)
+                       )
 #endif
 {
+    apvts.state.setProperty(Service::PresetManager::presetNameProperty, "", nullptr);
+    apvts.state.setProperty("version", ProjectInfo::versionString, nullptr);
+    presetManager = std::make_unique<Service::PresetManager>(apvts);
 }
 
 RaceCrusherAudioProcessor::~RaceCrusherAudioProcessor()

@@ -23,7 +23,8 @@ const juce::File PresetManager::defaultDirectory
 };
 
 const juce::String PresetManager::extension{"xml"};
-//  const juce::String PresetManager::presetNameProperty{ "presetName" };
+const juce::String PresetManager::presetNameProperty{"presetName"};
+
 PresetManager::PresetManager(juce::AudioProcessorValueTreeState& apvts) :
     apvtsRef(apvts)
 {
@@ -36,6 +37,8 @@ PresetManager::PresetManager(juce::AudioProcessorValueTreeState& apvts) :
             jassertfalse;
         }
     }
+    apvtsRef.state.addListener(this);
+    currentPreset.referTo( apvtsRef.state.getPropertyAsValue(presetNameProperty, nullptr));
 }
 
 void PresetManager::savePreset(const juce::String& presetName)
@@ -51,6 +54,8 @@ void PresetManager::savePreset(const juce::String& presetName)
         DBG("could not creaete preset file: " + presetFile.getFullPathName());
         jassertfalse;
     }
+    
+
 }
 
 void PresetManager::deletePreset(const juce::String& presetName)
@@ -126,6 +131,10 @@ juce::StringArray PresetManager::getAllPresets() const {
 
 juce::String PresetManager::getCurrentPreset() const {
     return currentPreset.toString();
+}
+
+void PresetManager::valueTreeRedirected(juce::ValueTree& treeWhichHasBeenChanged) {
+    currentPreset.referTo(treeWhichHasBeenChanged.getPropertyAsValue(presetNameProperty, nullptr));
 }
 
 }
