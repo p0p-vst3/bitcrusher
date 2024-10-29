@@ -29,10 +29,8 @@ class PresetPanel : public juce::Component, juce::Button::Listener, juce::ComboB
             addAndMakeVisible(presetList);
             presetList.addListener(this);
             
-            const auto allPresets = presetManager.getAllPresets();
-            const auto currentPreset = presetManager.getCurrentPreset();
-            presetList.addItemList(allPresets, 1);
-            presetList.setSelectedItemIndex(allPresets.indexOf(currentPreset), juce::dontSendNotification);
+            
+            loadPresetList();
         }
         
         ~PresetPanel()
@@ -74,24 +72,36 @@ class PresetPanel : public juce::Component, juce::Button::Listener, juce::ComboB
                 fileChooser->launchAsync(juce::FileBrowserComponent::saveMode, [&](const juce::FileChooser& chooser) {
                     const auto resultFile = chooser.getResult();
                     presetManager.savePreset(resultFile.getFileNameWithoutExtension());
+                    loadPresetList();
                 });
             }
             
             if (button == &previousButton)
             {
-                presetManager.loadPreviousPreset();
+                const int index = presetManager.loadPreviousPreset();
+                presetList.setSelectedItemIndex(index, juce::dontSendNotification);
             }
             if (button == &nextButton)
             {
-                presetManager.loadNextPreset();
+                const int index = presetManager.loadNextPreset();
+                presetList.setSelectedItemIndex(index, juce::dontSendNotification);
             }
             if (button == &deleteButton) 
             {
                 presetManager.deletePreset(presetManager.getCurrentPreset());
+                loadPresetList();
             }
         }
         void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override {
             presetManager.loadPreset(presetList.getItemText(presetList.getSelectedItemIndex()));
+        }
+        
+        void loadPresetList() {
+            presetList.clear(juce::dontSendNotification);
+            const auto allPresets = presetManager.getAllPresets();
+            const auto currentPreset = presetManager.getCurrentPreset();
+            presetList.addItemList(allPresets, 1);
+            presetList.setSelectedItemIndex(allPresets.indexOf(currentPreset), juce::dontSendNotification);
         }
         
         Service::PresetManager& presetManager;

@@ -95,21 +95,23 @@ void PresetManager::loadPreset(const juce::String& presetName) {
     
 }
 
-void PresetManager::loadNextPreset() { //github has return type as int
+int PresetManager::loadNextPreset() { //github has return type as int
     const auto allPresets = getAllPresets();
-    if (allPresets.isEmpty()) return;
+    if (allPresets.isEmpty()) return -1;
     
     const auto currentIndex = allPresets.indexOf(currentPreset.toString());
     const auto nextIndex = currentIndex + 1 > (allPresets.size() - 1) ? 0 : currentIndex + 1;
     loadPreset(allPresets.getReference(nextIndex));
+    return nextIndex;
 }
-void PresetManager::loadPreviousPreset() { //github has return type as int
+int PresetManager::loadPreviousPreset() { //github has return type as int
     const auto allPresets = getAllPresets();
-    if (allPresets.isEmpty()) return;
+    if (allPresets.isEmpty()) return -1;
     
     const auto currentIndex = allPresets.indexOf(currentPreset.toString());
-    const auto previousIndex = currentIndex - 1 > 0 ? allPresets.size() - 1 : currentIndex - 1;
+    const auto previousIndex = currentIndex - 1 < 0 ? allPresets.size() - 1 : currentIndex - 1;
     loadPreset(allPresets.getReference(previousIndex));
+    return previousIndex;
 }
 
 juce::StringArray PresetManager::getAllPresets() const {
