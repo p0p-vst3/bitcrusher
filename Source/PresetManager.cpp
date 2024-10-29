@@ -15,10 +15,11 @@ namespace Service
 
 const juce::File PresetManager::defaultDirectory
 {
-    juce::File::getSpecialLocation(
-    juce::File::SpecialLocationType::commonApplicationDataDirectory)
-    .getChildFile(ProjectInfo::companyName)
-    .getChildFile(ProjectInfo::projectName)
+//    juce::File::getSpecialLocation(
+//    juce::File::SpecialLocationType::commonApplicationDataDirectory)
+//    .getChildFile(ProjectInfo::companyName)
+//    .getChildFile(ProjectInfo::projectName)
+    "~/Library/Application Support/GTBitcrusher"
 };
 
 const juce::String PresetManager::extension{"xml"};

@@ -17,7 +17,7 @@ namespace Gui
 class PresetPanel : public juce::Component, juce::Button::Listener, juce::ComboBox::Listener
     {
     public:
-        PresetPanel()
+        PresetPanel(Service::PresetManager& pm) : presetManager(pm)
         {
             configureButton(saveButton, "Save");
             configureButton(deleteButton, "Delete");
@@ -28,6 +28,11 @@ class PresetPanel : public juce::Component, juce::Button::Listener, juce::ComboB
             presetList.setMouseCursor(juce::MouseCursor::PointingHandCursor);
             addAndMakeVisible(presetList);
             presetList.addListener(this);
+            
+            const auto allPresets = presetManager.getAllPresets();
+            const auto currentPreset = presetManager.getCurrentPreset();
+            presetList.addItemList(allPresets, 1);
+            presetList.setSelectedItemIndex(allPresets.indexOf(currentPreset), juce::dontSendNotification);
         }
         
         ~PresetPanel()
@@ -61,8 +66,35 @@ class PresetPanel : public juce::Component, juce::Button::Listener, juce::ComboB
             button.addListener(this);
         }
         
-        void buttonClicked(juce::Button* button) override {}
-        void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override {}
+        void buttonClicked(juce::Button* button) override {
+            
+            if (button == &saveButton) {
+                fileChooser = std::make_unique<juce::FileChooser>("please enter the name of the preset to save",
+                                    Service::PresetManager::defaultDirectory, "*." + Service::PresetManager::extension);
+                fileChooser->launchAsync(juce::FileBrowserComponent::saveMode, [&](const juce::FileChooser& chooser) {
+                    const auto resultFile = chooser.getResult();
+                    presetManager.savePreset(resultFile.getFileNameWithoutExtension());
+                });
+            }
+            
+            if (button == &previousButton)
+            {
+                presetManager.loadPreviousPreset();
+            }
+            if (button == &nextButton)
+            {
+                presetManager.loadNextPreset();
+            }
+            if (button == &deleteButton) 
+            {
+                presetManager.deletePreset(presetManager.getCurrentPreset());
+            }
+        }
+        void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override {
+            presetManager.loadPreset(presetList.getItemText(presetList.getSelectedItemIndex()));
+        }
+        
+        Service::PresetManager& presetManager;
         juce::TextButton saveButton, deleteButton, previousButton, nextButton;
         juce::ComboBox presetList;
         std::unique_ptr<juce::FileChooser> fileChooser;

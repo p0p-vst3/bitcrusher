@@ -175,7 +175,8 @@ RaceCrusherAudioProcessorEditor::RaceCrusherAudioProcessorEditor (RaceCrusherAud
     : AudioProcessorEditor (&p), audioProcessor (p),
 bitDepthAttachment(audioProcessor.apvts, "BIT_DEPTH", bitDepthSlider),
 rateDivideAttachment(audioProcessor.apvts, "RATE_DIVIDE", rateDivideSlider),
-dryWetAttachment(audioProcessor.apvts, "DRY_WET", dryWetSlider)
+dryWetAttachment(audioProcessor.apvts, "DRY_WET", dryWetSlider),
+presetPanel(audioProcessor.getPresetManager())
 
 {
     // Make sure that before the constructor has finished, you've set the
