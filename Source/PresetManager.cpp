@@ -121,7 +121,7 @@ int PresetManager::loadPreviousPreset() { //github has return type as int
 
 juce::StringArray PresetManager::getAllPresets() const {
     juce::StringArray presets;
-    const auto fileArray = defaultDirectory.findChildFiles(juce::File::TypesOfFileToFind::findFiles, false);
+    const auto fileArray = defaultDirectory.findChildFiles(juce::File::TypesOfFileToFind::findFiles, false, "*." + extension);
     for (const auto& file : fileArray)
     {
         presets.add(file.getFileNameWithoutExtension());
