@@ -243,7 +243,7 @@ void RaceCrusherAudioProcessorEditor::paint (juce::Graphics& g)
     auto titleBounds = bounds.removeFromTop(getHeight()/5);
     g.setColour(juce::Colours::ivory);
     g.setFont(38.f);
-    g.drawText("Race Crusher", titleBounds, juce::Justification::centred);
+    g.drawText("GT Crusher", titleBounds, juce::Justification::centredBottom);
     auto textBounds = bounds.removeFromTop(30);
 //    g.fillRect(textBounds);
     auto bitDepthTextBounds = textBounds.removeFromLeft(textBounds.getWidth()/3);
