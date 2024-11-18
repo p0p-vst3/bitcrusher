@@ -61,7 +61,7 @@ public:
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createAudioParameters()};
 
     float quantizeSample(float sample, float stepSize) const {
-        return std::floor(sample / stepSize + 0.5f) * stepSize;
+        return std::floor(sample / stepSize + 0.5f) * stepSize; //the + 0.5 allows for rounding instead of truncation
     }
 
     float applyDryWetMix(float drySample, float wetSample, float dryWetValue) {

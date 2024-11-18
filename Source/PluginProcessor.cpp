@@ -149,7 +149,7 @@ void RaceCrusherAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     int bitDepthValue = static_cast<int>(apvts.getRawParameterValue("BIT_DEPTH")->load());
     int rateDivideValue = static_cast<int>(std::round(apvts.getRawParameterValue("RATE_DIVIDE")->load()));
     float dryWetValue = apvts.getRawParameterValue("DRY_WET")->load();
-    float stepSize = 2.0f / (std::pow(2.0f, bitDepthValue));
+    float stepSize = 2.0f / (std::pow(2.0f, bitDepthValue)); //2.0 represents our range of possible values from -1 to 1.
     bool downSamplingOn = rateDivideValue > 1;
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel) 
